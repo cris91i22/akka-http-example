@@ -1,4 +1,4 @@
-* Akka Http basic example
+# Akka Http basic example
 
 - http routes
 - basic actors
