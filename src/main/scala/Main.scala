@@ -24,13 +24,12 @@ object Main extends ServicesTimeouts with App with Routes {
   implicit lazy val executor = system.dispatcher
   implicit lazy val materializer = ActorMaterializer()
 
-  log.info("ACAAAAAAAAAAAAAAAAAAaaa")
   // Database
   val db = new ExampleDB(config)
   db.instance.run(DBIO.seq(TableQueries.createActions(): _*))
   val storage = new ExampleStorage(db.instance, TableQueries)
   storage.users.create(User(None, "cris", "bla"))
-  log.info("ACAAAAAAAAAAAAAAAAAAaaa2222222222222")
+
   // Services
   val messageService = system.actorOf(MessageServiceActor.props, name = "messageServiceActor")
 
