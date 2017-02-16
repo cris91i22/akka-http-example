@@ -3,9 +3,13 @@ import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.akka.http.api.routes.Routes
+import com.akka.http.dl.storage.ExampleStorage
+import com.akka.http.dl.{ExampleDB, TableQueries}
 import com.akka.http.services.{DeadLettersCatcher, MessageServiceActor}
 import com.akka.http.utils.ServicesTimeouts
 import com.typesafe.config.ConfigFactory
+import com.akka.http.dl.utils.ExtendedPostgresDriver.api._
+import com.akka.http.model.User
 
 object Main extends ServicesTimeouts with App with Routes {
 
@@ -20,6 +24,13 @@ object Main extends ServicesTimeouts with App with Routes {
   implicit lazy val executor = system.dispatcher
   implicit lazy val materializer = ActorMaterializer()
 
+  log.info("ACAAAAAAAAAAAAAAAAAAaaa")
+  // Database
+  val db = new ExampleDB(config)
+  db.instance.run(DBIO.seq(TableQueries.createActions(): _*))
+  val storage = new ExampleStorage(db.instance, TableQueries)
+  storage.users.create(User(None, "cris", "bla"))
+  log.info("ACAAAAAAAAAAAAAAAAAAaaa2222222222222")
   // Services
   val messageService = system.actorOf(MessageServiceActor.props, name = "messageServiceActor")
 
