@@ -1,12 +1,13 @@
 package com.akka.http.services
 
 import akka.actor.{Actor, ActorLogging, DeadLetter, Props}
+import com.typesafe.scalalogging.LazyLogging
 
-class DeadLettersCatcher extends Actor with ActorLogging {
+class DeadLettersCatcher extends Actor with LazyLogging{
 
   override def receive: Receive = {
     case DeadLetter(msg, sdr, rcpt) =>
-      log.warning(s"You have dead letters message: $msg , sender: $sdr and recipient: $rcpt")
+      logger.warn(s"You have dead letters message: $msg , sender: $sdr and recipient: $rcpt")
   }
 
 }

@@ -7,7 +7,8 @@ object MessageConverters {
 
   implicit def convert(request: MessageRequest): CreateMessage = {
     CreateMessage(text = request.text,
-                  user = request.from)
+                  from = request.userId,
+                  to = request.recipientId)
   }
 
 }

@@ -14,7 +14,10 @@ lazy val root =
         "com.typesafe.slick"          %% "slick"            % "3.2.0-M2",
         "com.github.tminglei"         %% "slick-pg"         % "0.15.0-M4",
         "com.typesafe.slick"          %% "slick-hikaricp"   % "3.2.0-M2",
-        "com.zaxxer"          % "HikariCP"      % "2.6.0",
-        "org.postgresql"      % "postgresql"    % "9.4.1208.jre7",
-        "joda-time"           % "joda-time"     % "2.7"
+        "org.scalaz"                  %% "scalaz-core"      % "7.2.8",
+        "com.typesafe.scala-logging"  %% "scala-logging"    % "3.5.0",
+        "ch.qos.logback"      % "logback-classic"     % "1.2.1",
+        "com.zaxxer"          % "HikariCP"            % "2.6.0",
+        "org.postgresql"      % "postgresql"          % "9.4.1208.jre7",
+        "joda-time"           % "joda-time"           % "2.7"
       ))

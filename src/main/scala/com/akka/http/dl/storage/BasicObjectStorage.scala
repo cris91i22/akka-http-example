@@ -1,10 +1,15 @@
 package com.akka.http.dl.storage
 
-import com.akka.http.model.User
+import com.akka.http.model.{Message, User}
+
 import scala.concurrent.Future
 
 trait Storage {
   def users: BasicObjectStorage[User]
+  def messages: BasicObjectStorage[Message]
+
+  def countUsers: StorageQuery0[Int]
+
 }
 
 trait BasicObjectStorage[T] {

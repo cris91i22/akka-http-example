@@ -1,15 +1,14 @@
 import akka.actor.{ActorSystem, DeadLetter}
-import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.akka.http.api.routes.Routes
 import com.akka.http.dl.storage.ExampleStorage
+import com.akka.http.dl.utils.ExtendedPostgresDriver.api._
 import com.akka.http.dl.{ExampleDB, TableQueries}
+import com.akka.http.model.User
 import com.akka.http.services.{DeadLettersCatcher, MessageServiceActor}
 import com.akka.http.utils.ServicesTimeouts
 import com.typesafe.config.ConfigFactory
-import com.akka.http.dl.utils.ExtendedPostgresDriver.api._
-import com.akka.http.model.User
 
 object Main extends ServicesTimeouts with App with Routes {
 
@@ -19,19 +18,23 @@ object Main extends ServicesTimeouts with App with Routes {
   val httpPort = httpConfig.getInt("port")
 
   implicit lazy val system = ActorSystem("AkkaHttpSystem", config)
-
-  lazy val log = Logging(system, getClass)
   implicit lazy val executor = system.dispatcher
   implicit lazy val materializer = ActorMaterializer()
 
+  /**
+    * Start database with docker
+    * docker run --name some-postgres -e POSTGRES_PASSWORD=1234 -e POSTGRES_DB=local -d -p 5432:5432 postgres
+    * psql -h public-ip-server -p 5432 -U postgres
+    */
   // Database
   val db = new ExampleDB(config)
   db.instance.run(DBIO.seq(TableQueries.createActions(): _*))
   val storage = new ExampleStorage(db.instance, TableQueries)
   storage.users.create(User(None, "cris", "bla"))
+  storage.users.create(User(None, "pol", "bla"))
 
   // Services
-  val messageService = system.actorOf(MessageServiceActor.props, name = "messageServiceActor")
+  val messageService = system.actorOf(MessageServiceActor.props(storage), name = "messageServiceActor")
 
   // Dead letters catcher
   val deadLettersCatcher = system.actorOf(DeadLettersCatcher.props, "dead-letters-catcher")

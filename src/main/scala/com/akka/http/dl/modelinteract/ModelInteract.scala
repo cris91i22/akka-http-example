@@ -18,4 +18,5 @@ trait ModelInteract[T] {
 
 object ModelInteract {
   implicit val modelInteractUser = ModelInteractUser
+  implicit val modelInteractMessage = ModelInteractMessage
 }

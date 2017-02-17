@@ -4,4 +4,5 @@ import utils.ExtendedPostgresDriver.api._
 
 trait TableRegistry {
   def users: TableQuery[Users]
+  def messages: TableQuery[Messages]
 }

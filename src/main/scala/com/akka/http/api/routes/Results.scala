@@ -2,21 +2,35 @@ package com.akka.http.api.routes
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server._
+import com.akka.http.utils.AppError
+import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.Future
 import scala.util.{Failure, Try}
+import scalaz.NonEmptyList
 
-private [routes] trait Results extends Directives {
+private [routes] trait Results extends Directives with LazyLogging {
 
-  protected def onCompleteWithHandling[T](f: => Future[T])(implicit tryHandler: PartialFunction[Try[T],StandardRoute]): Route = {
+  private val commonFailures: PartialFunction[Try[_], StandardRoute] = {
+    case Failure(ex) => complete(StatusCodes.InternalServerError, ex)
+  }
+
+  protected def onCompleteWithHandling[T](f: => Future[T])(implicit tryHandler: PartialFunction[Try[T], StandardRoute]): Route = {
     onComplete(f)(tryHandler orElse commonFailures)
   }
 
-  private val commonFailures: PartialFunction[Try[_], StandardRoute] = {
-    //    case Failure(UserNotAuthorized(usr)) => complete(StatusCodes.Forbidden, forbiddenUserMessage(usr))
-    //    case Failure(UpdateFailed(id)) => complete(StatusCodes.InternalServerError, updateFailedMessage(id))
-    //    case Failure(NotFound(id)) => complete(StatusCodes.NotFound, notFoundMessage(id))
-    case Failure(ex) => complete(StatusCodes.InternalServerError, ex.toString)
+  /**
+    * Utility method for generating the full error return object when encountering errors.
+    *
+    * @param errors The nel array of errors.
+    * @return JsObject containing the encoded errors.
+    */
+  protected def errorReturnObject(errors: NonEmptyList[AppError]): String = {
+    errors.foreach {
+      case AppError(shortCode, message, Some(throwable)) => logger.error(s"$shortCode: $message", throwable)
+      case AppError(shortCode, message, None) => logger.error(s"$shortCode: $message")
+    }
+    errors.toString()
   }
 
 }

@@ -1,7 +1,7 @@
 package com.akka.http.api.request
 
 case class MessageRequest(text: String,
-                          from: String){
+                          userId: Int,
+                          recipientId: Int){
   require(text nonEmpty)
-  require(from nonEmpty)
 }

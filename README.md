@@ -5,5 +5,8 @@
 - implements scalaz monads (either)
 - db storage postgresql (slick 3)
 - scala 2.12
+
+## TODO
+
 - gatling test
 - actors test

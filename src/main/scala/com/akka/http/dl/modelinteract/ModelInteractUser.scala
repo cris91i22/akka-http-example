@@ -1,7 +1,7 @@
 package com.akka.http.dl.modelinteract
 
-import com.akka.http.dl.{TableRegistry, UserDAO, Users}
-import com.akka.http.model.User
+import com.akka.http.dl._
+import com.akka.http.model._
 
 trait ModelInteractUser extends ModelInteract[User] {
   type D = UserDAO
@@ -22,4 +22,27 @@ object ModelInteractUser extends ModelInteractUser {
   )
 
   def table(tRegistry: TableRegistry) = tRegistry.users
+}
+
+trait ModelInteractMessage extends ModelInteract[Message] {
+  type D = MessageDAO
+  type Q = Messages
+}
+
+object ModelInteractMessage extends ModelInteractMessage {
+  implicit def upConvert(dao: MessageDAO): Message = Message(
+    dao.id,
+    dao.text,
+    dao.userId,
+    dao.recipientId
+  )
+
+  implicit def downConvert(model: Message): MessageDAO = MessageDAO(
+    model.id,
+    model.text,
+    model.userId,
+    model.recipientId
+  )
+
+  def table(tRegistry: TableRegistry) = tRegistry.messages
 }

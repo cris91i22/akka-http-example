@@ -13,7 +13,7 @@ class Users(tag: Tag) extends Table[UserDAO](tag, "users") with WithStandardID[U
   def * = (id.?, name, email) <> (UserDAO.tupled, UserDAO.unapply)
 }
 
-class Messages(tag: Tag) extends Table[MessageDAO](tag, "users") with WithStandardID[MessageDAO] {
+class Messages(tag: Tag) extends Table[MessageDAO](tag, "messages") with WithStandardID[MessageDAO] {
   def text = column[String]("text")
   def userId = column[Int]("userId")
   def recipientId = column[Int]("recipientId")
@@ -27,11 +27,13 @@ class Messages(tag: Tag) extends Table[MessageDAO](tag, "users") with WithStanda
 object TableQueries extends TableRegistry {
 
   val users = TableQuery[Users]
+  val messages = TableQuery[Messages]
 
   // This list should always be ordered such that a DDL created from the sequence is ordered correctly (i.e. If table A has a
   // foreign key to table B then table B should appear first in the sequence).
   val all = Seq(
-    users
+    users,
+    messages
   )
 
   def createActions() = all.map(_.schema.create)
