@@ -12,5 +12,6 @@ application "Either" monad (from Scalaz), representing the errors in the left si
 
 ## TODO
 
+- JWT Authorization
 - gatling test
 - actors test
