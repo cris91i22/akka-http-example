@@ -16,7 +16,6 @@ class MessageServiceActor(storage: Storage) extends Actor with LazyLogging {
 
   override def receive: Receive = {
     case m: MessageServiceParams => receiveLocal(m, sender)
-
   }
 
   private def receiveLocal(m: MessageServiceParams, senderStash: ActorRef) = {

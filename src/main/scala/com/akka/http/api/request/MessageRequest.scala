@@ -5,3 +5,9 @@ case class MessageRequest(text: String,
                           recipientId: Int){
   require(text nonEmpty)
 }
+
+case class UserRequest(name: String,
+                       email: String){
+  require(name nonEmpty)
+  require(email nonEmpty)
+}

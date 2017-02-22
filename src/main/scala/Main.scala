@@ -5,8 +5,7 @@ import com.akka.http.api.routes.Routes
 import com.akka.http.dl.storage.ExampleStorage
 import com.akka.http.dl.utils.ExtendedPostgresDriver.api._
 import com.akka.http.dl.{ExampleDB, TableQueries}
-import com.akka.http.model.User
-import com.akka.http.services.{DeadLettersCatcher, MessageServiceActor}
+import com.akka.http.services.{DeadLettersCatcher, MessageServiceActor, UserServiceActor}
 import com.akka.http.utils.ServicesTimeouts
 import com.typesafe.config.ConfigFactory
 
@@ -30,11 +29,11 @@ object Main extends ServicesTimeouts with App with Routes {
   val db = new ExampleDB(config)
   db.instance.run(DBIO.seq(TableQueries.createActions(): _*))
   val storage = new ExampleStorage(db.instance, TableQueries)
-  storage.users.create(User(None, "cris", "bla"))
-  storage.users.create(User(None, "pol", "bla"))
+
 
   // Services
   val messageService = system.actorOf(MessageServiceActor.props(storage), name = "messageServiceActor")
+  val userService = system.actorOf(UserServiceActor.props(storage), name = "userServiceActor")
 
   // Dead letters catcher
   val deadLettersCatcher = system.actorOf(DeadLettersCatcher.props, "dead-letters-catcher")

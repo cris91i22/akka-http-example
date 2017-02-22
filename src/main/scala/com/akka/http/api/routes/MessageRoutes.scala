@@ -17,12 +17,12 @@ import scala.util.{Success, Try}
 import scalaz.{-\/, \/-}
 
 trait MessageRoutes extends AutoMarshaller with Results with LazyLogging {
-  import com.akka.http.api.converters.MessageConverters._
+  import com.akka.http.api.converters.RequestConverters._
 
   val messageService: ActorRef
   implicit val messageServiceTimeout: Timeout
 
-  val create = (pathEnd & post) {
+  private val create = (pathEnd & post) {
     entity(as[MessageRequest]) { record =>
       implicit val tryHandler: PartialFunction[Try[EitherNel[AppError, Message]], StandardRoute] = {
         case Success(r) => r match {
@@ -35,7 +35,7 @@ trait MessageRoutes extends AutoMarshaller with Results with LazyLogging {
     }
   }
 
-  val messageRoutes = pathPrefix("message"){
+  val messageRoutes: Route = pathPrefix("message"){
     create //~
   }
 

@@ -3,7 +3,7 @@ package com.akka.http.api.routes
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.RejectionHandler
 
-trait Routes extends MessageRoutes {
+trait Routes extends MessageRoutes with UserRoutes {
 
   val rh = RejectionHandler.newBuilder().handle{
     case rejection => complete(InternalServerError, rejection.toString)
@@ -11,7 +11,8 @@ trait Routes extends MessageRoutes {
 
   lazy val routes =
     handleRejections(rh) {
-      messageRoutes
+      messageRoutes ~
+        userRoutes
     }
 
 }

@@ -9,6 +9,7 @@ trait Storage {
   def messages: BasicObjectStorage[Message]
 
   def countUsers: StorageQuery0[Int]
+  def retrieveUsersWithMessages: StorageQuery0[Map[User, Seq[Message]]]
 
 }
 

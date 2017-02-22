@@ -2,7 +2,7 @@ package com.akka.http.dl.storage
 
 import com.akka.http.dl.TableRegistry
 import com.akka.http.dl.modelinteract.ModelInteract
-import com.akka.http.dl.query.CountUsersQuery
+import com.akka.http.dl.query.{CountUsersQuery, UsersWithMessagesQuery}
 import com.akka.http.dl.utils.ExtendedPostgresDriver.api._
 import com.akka.http.model.{Message, User}
 
@@ -17,5 +17,6 @@ class ExampleStorage(val db: Database, val tRegistry: TableRegistry)
   val messages: BasicObjectStorage[Message] = new ObjectStorage[Message](db, tRegistry)
 
   val countUsers: CountUsersQuery = new CountUsersQuery(db, tRegistry)
+  val retrieveUsersWithMessages: UsersWithMessagesQuery = new UsersWithMessagesQuery(db, tRegistry)
 
 }
