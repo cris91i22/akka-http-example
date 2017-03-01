@@ -12,6 +12,10 @@ application "Either" monad (from Scalaz), representing the errors in the left si
 
 ## TODO
 
+- Modularize (create paths to actors)
+- Use actor selections
+- Create an actor like supervisor of others
+- Implement routers (by config in akka)
 - JWT Authorization
 - gatling test
 - actors test
