@@ -1,5 +1,6 @@
 import akka.actor.{ActorSystem, DeadLetter}
 import akka.http.scaladsl.Http
+import akka.routing.FromConfig
 import akka.stream.ActorMaterializer
 import com.akka.http.api.routes.Routes
 import com.akka.http.dl.storage.ExampleStorage
@@ -32,8 +33,8 @@ object Main extends ServicesTimeouts with App with Routes {
 
 
   // Services
-  val messageService = system.actorOf(MessageServiceActor.props(storage), name = "messageServiceActor")
-  val userService = system.actorOf(UserServiceActor.props(storage), name = "userServiceActor")
+  val messageService = system.actorOf(FromConfig.props(MessageServiceActor.props(storage)), name = "message-service")
+  val userService = system.actorOf(FromConfig.props(UserServiceActor.props(storage)), name = "user-service")
 
   // Dead letters catcher
   val deadLettersCatcher = system.actorOf(DeadLettersCatcher.props, "dead-letters-catcher")

@@ -8,10 +8,11 @@ import akka.util.Timeout
 import com.akka.http.api.request.UserRequest
 import com.akka.http.model.{Message, User}
 import com.akka.http.services.MessageServiceActor.CreateObjectReturn
-import com.akka.http.services.UserServiceActor.RetrieveUsersWithMessages
+import com.akka.http.services.UserServiceActor.{ObjectReturn, RetrieveUsersWithMessages}
 import com.akka.http.utils.fenele.EitherNel
 import com.akka.http.utils.{AppError, AutoMarshaller}
 import com.typesafe.scalalogging.LazyLogging
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Success, Try}
 import scalaz.{-\/, \/-}
@@ -32,7 +33,7 @@ trait UserRoutes extends AutoMarshaller with Results with LazyLogging {
         }
       }
 
-      onCompleteWithHandling((userService ? convertUser(record)).mapTo[CreateObjectReturn[User]].map(_.result))
+      onCompleteWithHandling((userService ? convertUser(record)).mapTo[ObjectReturn[User]].map(_.result))
     }
   }
 
@@ -45,7 +46,7 @@ trait UserRoutes extends AutoMarshaller with Results with LazyLogging {
       }
     }
 
-    onCompleteWithHandling((userService ? RetrieveUsersWithMessages).mapTo[CreateObjectReturn[Map[User, Seq[Message]]]].map(_.result))
+    onCompleteWithHandling((userService ? RetrieveUsersWithMessages).mapTo[ObjectReturn[Map[User, Seq[Message]]]].map(_.result))
   }
 
   val userRoutes: Route = pathPrefix("user"){

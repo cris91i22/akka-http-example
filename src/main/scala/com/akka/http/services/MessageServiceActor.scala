@@ -21,6 +21,8 @@ class MessageServiceActor(storage: Storage) extends Actor with LazyLogging {
   private def receiveLocal(m: MessageServiceParams, senderStash: ActorRef) = {
     import context.dispatcher
 
+    logger.debug(s"Message service actor, path: ${self.path.name}")
+
     m match {
       case CreateMessage(text, from, to) => storage.messages.create(Message(None, text, from, to)).onComplete {
         case Success(r) => senderStash ! CreateObjectReturn[Message](\/-(r))

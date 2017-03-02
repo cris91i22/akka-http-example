@@ -20,6 +20,8 @@ class UserServiceActor(storage: Storage) extends Actor with LazyLogging {
   private def receiveLocal(m: UserServiceParams, senderStash: ActorRef) = {
     import context.dispatcher
 
+    logger.debug(s"User service actor, path: ${self.path.name}")
+
     m match {
       case CreateUser(n, e) => storage.users.create(User(None, n, e)) onComplete {
         case Success(r) => senderStash ! ObjectReturn[User](\/-(r))
